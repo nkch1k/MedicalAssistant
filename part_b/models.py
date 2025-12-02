@@ -17,7 +17,7 @@ class QuestionRequest(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "input": "ЫЮФ ЩвЬФ ЬЩ СЩШХЧ ШЩдХЬЩ РзХдХазШХиФ?",
+                "input": "Ч›ЧћЧ” Ч™ЧўЧњЧ” ЧњЧ™ Ч‘Ч™ЧЧ•Ч— ЧЧ™Ч¤Ч•ЧњЧ™ ЧђЧ§Ч•Ч¤Ч•Ч Ч§ЧЧ•ЧЁЧ”?",
                 "id": "query-123"
             }
         }
@@ -36,8 +36,8 @@ class QuestionResponse(BaseModel):
         json_schema_extra = {
             "example": {
                 "id": "550e8400-e29b-41d4-a716-446655440000",
-                "question": "ЫЮФ ЩвЬФ ЬЩ СЩШХЧ ШЩдХЬЩ РзХдХазШХиФ?",
-                "answer": "вЬХк ФСЩШХЧ кЬХЩФ СТЩЬ...",
+                "question": "Ч›ЧћЧ” Ч™ЧўЧњЧ” ЧњЧ™ Ч‘Ч™ЧЧ•Ч— ЧЧ™Ч¤Ч•ЧњЧ™ ЧђЧ§Ч•Ч¤Ч•Ч Ч§ЧЧ•ЧЁЧ”?",
+                "answer": "ЧўЧњЧ•ЧЄ Ч”Ч‘Ч™ЧЧ•Ч— ЧЄЧњЧ•Ч™Ч” Ч‘Ч’Ч™Чњ...",
                 "status": "completed",
                 "timestamp": "2024-12-02T10:30:00"
             }
@@ -57,8 +57,8 @@ class AnswerResponse(BaseModel):
         json_schema_extra = {
             "example": {
                 "id": "550e8400-e29b-41d4-a716-446655440000",
-                "question": "ЫЮФ ЩвЬФ ЬЩ СЩШХЧ ШЩдХЬЩ РзХдХазШХиФ?",
-                "answer": "вЬХк ФСЩШХЧ кЬХЩФ СТЩЬ...",
+                "question": "Ч›ЧћЧ” Ч™ЧўЧњЧ” ЧњЧ™ Ч‘Ч™ЧЧ•Ч— ЧЧ™Ч¤Ч•ЧњЧ™ ЧђЧ§Ч•Ч¤Ч•Ч Ч§ЧЧ•ЧЁЧ”?",
+                "answer": "ЧўЧњЧ•ЧЄ Ч”Ч‘Ч™ЧЧ•Ч— ЧЄЧњЧ•Ч™Ч” Ч‘Ч’Ч™Чњ...",
                 "status": "completed",
                 "timestamp": "2024-12-02T10:30:00"
             }
