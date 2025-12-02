@@ -51,15 +51,10 @@ class RAGService:
         try:
             # Initialize RAG application
             self.rag_app = RAGApplication()
-            self.rag_app.initialize_system(document_path)
-
-            # Extract metadata (simplified - would need to access from loader)
-            # For now, we'll return placeholder values
-            pages = 11  # Would get from document metadata
-            chunks = 45  # Would get from processor
+            pages, chunks = self.rag_app.initialize_system(document_path)
 
             self.current_document_id = f"doc-{uuid.uuid4()}"
-            logger.info(f"RAG initialized successfully with document ID: {self.current_document_id}")
+            logger.info(f"RAG initialized successfully: {pages} pages, {chunks} chunks, ID: {self.current_document_id}")
 
             return pages, chunks
 

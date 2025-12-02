@@ -37,12 +37,15 @@ class RAGApplication:
         self.config = load_config()
         self.rag_chain: Optional[RAGChain] = None
 
-    def initialize_system(self, document_path: Path) -> None:
+    def initialize_system(self, document_path: Path) -> tuple[int, int]:
         """
         Initialize the RAG system with a document.
 
         Args:
             document_path: Path to the PDF document
+
+        Returns:
+            Tuple of (total_pages, total_chunks)
         """
         logger.info("=" * 70)
         logger.info("Initializing RAG System")
@@ -113,6 +116,9 @@ class RAGApplication:
             logger.info("=" * 70)
             logger.info("System ready!")
             logger.info("=" * 70)
+
+            # Return actual metadata
+            return metadata['total_pages'], validation_report['total_chunks']
 
         except Exception as e:
             logger.error(f"Failed to initialize system: {e}")
@@ -199,7 +205,7 @@ def main():
     try:
         # Initialize application
         app = RAGApplication()
-        app.initialize_system(document_path)
+        pages, chunks = app.initialize_system(document_path)
 
         # Run interactive interface
         app.run_interactive()

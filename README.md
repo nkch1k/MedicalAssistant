@@ -435,13 +435,3 @@ Logs are written to:
 - Use local embeddings instead of storing all in memory
 - Process document in batches
 
-## License
-
-MIT License - See LICENSE file for details
-
-## Support
-
-For issues and questions:
-- Check logs in `rag_service.log`
-- Review configuration in `.env`
-- Ensure PDF document is valid

@@ -81,7 +81,7 @@ def run_validation(document_path: Path) -> Dict[str, Any]:
     # Initialize application
     print("Initializing RAG system...")
     app = RAGApplication()
-    app.initialize_system(document_path)
+    pages, chunks = app.initialize_system(document_path)
     print()
 
     # Run tests
