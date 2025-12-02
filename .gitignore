@@ -54,3 +54,10 @@ test_results.xml
 # Data (keep structure, ignore files)
 data/*.pdf
 data/*.docx
+data/temp/
+
+# Part B: Database
+db/
+*.db
+*.sqlite
+*.sqlite3
