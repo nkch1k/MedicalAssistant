@@ -7,10 +7,6 @@ python-dotenv==1.0.0
 # PDF processing
 pdfplumber==0.10.3
 
-# Alternative: local embeddings (optional)
-sentence-transformers==2.3.1
-torch==2.1.2
-
 # Utilities
 numpy==1.26.3
 
@@ -18,11 +14,9 @@ numpy==1.26.3
 fastapi==0.109.0
 uvicorn==0.27.0
 python-multipart==0.0.6
-sqlalchemy==2.0.25
+sqlalchemy>=2.0.36
 
-# Development dependencies
+# Development dependencies (optional)
 pytest==7.4.4
 pytest-asyncio==0.23.3
 httpx==0.26.0
-black==24.1.1
-flake8==7.0.0

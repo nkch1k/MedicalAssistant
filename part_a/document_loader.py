@@ -8,6 +8,7 @@ from pathlib import Path
 import pdfplumber
 import unicodedata
 import re
+from bidi.algorithm import get_display
 
 
 logger = logging.getLogger(__name__)
@@ -75,38 +76,33 @@ class DocumentLoader:
             logger.error(f"Error processing PDF: {e}")
             raise ValueError(f"Failed to process PDF: {e}")
 
-    def _is_rtl_text(self, text: str) -> bool:
-        """
-        Check if text should be reversed (contains RTL Hebrew text).
-        More sophisticated detection for mixed content.
-        """
-        if not text.strip():
-            return False
+    def _has_hebrew(self, text: str) -> bool:
+        """Check if text contains Hebrew characters."""
+        return bool(re.search(r'[\u0590-\u05FF]', text))
 
-        # Find first alphabetic character
-        for char in text:
-            if '\u0590' <= char <= '\u05FF':  # Hebrew
-                return True
-            elif ('a' <= char.lower() <= 'z'):  # Latin
-                return False
-
-        # If no alphabetic chars found, check overall Hebrew ratio
-        hebrew_chars = len(re.findall(r'[\u0590-\u05FF]', text))
-        total_alpha = len(re.findall(r'[א-תa-zA-Z]', text))
-        return total_alpha > 0 and (hebrew_chars / total_alpha) > 0.5
-
-    def _reverse_rtl_lines(self, text: str) -> str:
+    def _fix_bidi_text(self, text: str) -> str:
         """
-        Reverse character order in lines containing RTL text.
-        pdfplumber sometimes extracts RTL text in reverse order.
+        Fix bidirectional text using python-bidi library.
+        Handles RTL (Hebrew) text while preserving LTR elements (numbers, Latin).
         """
         lines = text.split('\n')
         fixed_lines = []
 
         for line in lines:
-            # If line contains significant Hebrew content, reverse it
-            if self._is_rtl_text(line):
-                fixed_lines.append(line[::-1])
+            if not line.strip():
+                fixed_lines.append(line)
+                continue
+
+            # If line contains Hebrew, use bidi algorithm
+            if self._has_hebrew(line):
+                try:
+                    # get_display handles bidirectional text properly
+                    # It keeps numbers and Latin text in correct order
+                    fixed_line = get_display(line)
+                    fixed_lines.append(fixed_line)
+                except Exception as e:
+                    logger.warning(f"Failed to process bidi text: {e}")
+                    fixed_lines.append(line)
             else:
                 fixed_lines.append(line)
 
@@ -117,8 +113,8 @@ class DocumentLoader:
         # Normalize unicode (important for Hebrew)
         text = unicodedata.normalize("NFC", text)
 
-        # Fix RTL text reversal issue
-        text = self._reverse_rtl_lines(text)
+        # Fix bidirectional text (RTL/LTR) using python-bidi
+        text = self._fix_bidi_text(text)
 
         # Remove excessive whitespace while preserving paragraph structure
         lines = text.split("\n")
