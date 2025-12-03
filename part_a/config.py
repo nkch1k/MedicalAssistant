@@ -15,7 +15,7 @@ class Config:
         from dotenv import load_dotenv
         env_path = Path(__file__).parent.parent / ".env"
         if env_path.exists():
-            load_dotenv(env_path)
+            load_dotenv(env_path, override=True)
 
         # API Keys
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
