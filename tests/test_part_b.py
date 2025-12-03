@@ -34,6 +34,7 @@ class TestHealthEndpoint:
 class TestUploadEndpoint:
     """Tests for POST /api/upload endpoint."""
 
+    @patch("part_b.main.rag_service.current_document_id", "test-doc-id-123")
     @patch("part_b.main.rag_service.initialize_rag")
     def test_upload_pdf_success(self, mock_initialize):
         """Test successful PDF upload."""
@@ -105,8 +106,8 @@ class TestQuestionEndpoint:
         # Mock Q&A record
         mock_record = Mock(spec=QARecord)
         mock_record.id = "test-query-123"
-        mock_record.question = "ÛÞÔ âÕÜÔ ÑÙØÕ×?"
-        mock_record.answer = "âÜÕê ÔÑÙØÕ× ÔÙÐ 8.22 ª"
+        mock_record.question = "×›×ž×” ×™×¢×œ×” ×œ×™ ×‘×™×˜×•×— ×˜×™×¤×•×œ×™ ××§×•×¤×•× ×§×˜×•×¨×”?"
+        mock_record.answer = "×”×ª×¢×¨×™×£ ×”×•× 8.22 â‚ª ×œ×˜×™×¤×•×œ"
         mock_record.status = "completed"
         mock_record.timestamp = datetime.now()
 
@@ -115,14 +116,14 @@ class TestQuestionEndpoint:
         # Send request
         response = client.post(
             "/api/question",
-            json={"input": "ÛÞÔ âÕÜÔ ÑÙØÕ×?", "id": "test-query-123"}
+            json={"input": "×›×ž×” ×™×¢×œ×” ×œ×™ ×‘×™×˜×•×— ×˜×™×¤×•×œ×™ ××§×•×¤×•× ×§×˜×•×¨×”?", "id": "test-query-123"}
         )
 
         assert response.status_code == 200
         data = response.json()
         assert data["id"] == "test-query-123"
-        assert data["question"] == "ÛÞÔ âÕÜÔ ÑÙØÕ×?"
-        assert data["answer"] == "âÜÕê ÔÑÙØÕ× ÔÙÐ 8.22 ª"
+        assert data["question"] == "×›×ž×” ×™×¢×œ×” ×œ×™ ×‘×™×˜×•×— ×˜×™×¤×•×œ×™ ××§×•×¤×•× ×§×˜×•×¨×”?"
+        assert data["answer"] == "×”×ª×¢×¨×™×£ ×”×•× 8.22 â‚ª ×œ×˜×™×¤×•×œ"
         assert data["status"] == "completed"
 
     @patch("part_b.main.rag_service.process_question")
@@ -133,8 +134,8 @@ class TestQuestionEndpoint:
 
         mock_record = Mock(spec=QARecord)
         mock_record.id = "auto-generated-uuid"
-        mock_record.question = "éÐÜÔ"
-        mock_record.answer = "êéÕÑÔ"
+        mock_record.question = "×©××œ×”"
+        mock_record.answer = "×ª×©×•×‘×”"
         mock_record.status = "completed"
         mock_record.timestamp = datetime.now()
 
@@ -142,7 +143,7 @@ class TestQuestionEndpoint:
 
         response = client.post(
             "/api/question",
-            json={"input": "éÐÜÔ"}  # No ID provided
+            json={"input": "×©××œ×”"}  # No ID provided
         )
 
         assert response.status_code == 200
@@ -156,7 +157,7 @@ class TestQuestionEndpoint:
 
         response = client.post(
             "/api/question",
-            json={"input": "ÛÞÔ âÕÜÔ ÑÙØÕ×?"}
+            json={"input": "×›×ž×” ×™×¢×œ×” ×œ×™ ×‘×™×˜×•×— ×˜×™×¤×•×œ×™ ××§×•×¤×•× ×§×˜×•×¨×”?"}
         )
 
         assert response.status_code == 400
@@ -193,8 +194,8 @@ class TestGetAnswerEndpoint:
         """Test successful answer retrieval."""
         mock_record = Mock(spec=QARecord)
         mock_record.id = "test-query-456"
-        mock_record.question = "ÛÞÔ ØÙäÕÜÙÝ ÞÛÕáÙÝ?"
-        mock_record.answer = "20 ØÙäÕÜÙÝ ÑéàÔ"
+        mock_record.question = "×›×ž×” ×˜×™×¤×•×œ×™× ×ž×›×•×¡×™×?"
+        mock_record.answer = "20 ×˜×™×¤×•×œ×™× ×‘×©× ×”"
         mock_record.status = "completed"
         mock_record.timestamp = datetime.now()
 
@@ -205,8 +206,8 @@ class TestGetAnswerEndpoint:
         assert response.status_code == 200
         data = response.json()
         assert data["id"] == "test-query-456"
-        assert data["question"] == "ÛÞÔ ØÙäÕÜÙÝ ÞÛÕáÙÝ?"
-        assert data["answer"] == "20 ØÙäÕÜÙÝ ÑéàÔ"
+        assert data["question"] == "×›×ž×” ×˜×™×¤×•×œ×™× ×ž×›×•×¡×™×?"
+        assert data["answer"] == "20 ×˜×™×¤×•×œ×™× ×‘×©× ×”"
 
     @patch("part_b.main.rag_service.get_answer")
     def test_get_answer_not_found(self, mock_get_answer):
@@ -240,6 +241,7 @@ class TestIntegrationScenarios:
         """Test complete workflow: upload -> question -> get_answer."""
         # Setup mocks
         mock_service.initialize_rag.return_value = (11, 45)
+        mock_service.current_document_id = "test-doc-id-workflow"
         mock_service.is_initialized.return_value = True
 
         # Mock question processing

@@ -94,24 +94,22 @@ cp path/to/your/insurance_document.pdf data/
 
 ### Console Application (Part A)
 
-**⚠️ Important for Hebrew text (Windows users):**
+**⚠️ Important for Hebrew text:**
 
-Standard Windows console (`cmd.exe`) doesn't support RTL (right-to-left) Hebrew text properly. You have two options:
+Due to Hebrew text display issues in terminal environments, it is **recommended to use the Web API (Part B) with Swagger UI** for testing Hebrew questions instead of the console application.
 
-**Option 1: Windows Terminal (recommended for interactive mode)**
+**Recommended: Use Swagger UI (Part B)**
 ```bash
-# Install Windows Terminal (if not already installed)
-winget install Microsoft.WindowsTerminal
+# Start the API server
+python -m part_b.main
 
-# Run from Windows Terminal
-wt -d . python -m part_a.main
+# Open browser to http://localhost:8000/docs
+# Use the interactive Swagger interface to ask questions in Hebrew
 ```
 
-Or use VS Code integrated terminal (Ctrl + `).
+**Alternative: Batch Mode with Questions File**
 
-**Option 2: Batch Mode (if RTL input issues persist)**
-
-Use a questions file to avoid typing Hebrew directly:
+If you need to use Part A, use a questions file to avoid terminal display issues:
 
 ```bash
 # Run with test questions file
@@ -122,12 +120,6 @@ python -m part_a.main --file my_questions.txt
 ```
 
 The `test_questions.txt` file contains the 4 mandatory test questions in Hebrew. You can edit it or create your own (one question per line, UTF-8 encoding).
-
-**Standard interactive mode:**
-
-```bash
-python -m part_a.main
-```
 
 The system will:
 1. Load and process the PDF document

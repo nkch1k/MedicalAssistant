@@ -123,13 +123,14 @@ class TestRAGChain:
 class TestConfig:
     """Tests for configuration."""
 
+    @patch('dotenv.load_dotenv')
     @patch.dict(os.environ, {
         "OPENAI_API_KEY": "test-key-12345",
         "CHUNK_SIZE": "600",
         "CHUNK_OVERLAP": "120",
-        "RETRIEVAL_K": "4"
+        "RETRIEVAL_K": "8"
     })
-    def test_config_initialization(self):
+    def test_config_initialization(self, mock_load_dotenv):
         """Test config initialization with environment variables."""
         config = Config()
 
@@ -139,7 +140,7 @@ class TestConfig:
         assert hasattr(config, 'retrieval_k')
         assert config.chunk_size == 600
         assert config.chunk_overlap == 120
-        assert config.retrieval_k == 4
+        assert config.retrieval_k == 8
         assert config.openai_api_key == "test-key-12345"
 
 
