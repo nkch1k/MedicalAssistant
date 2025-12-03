@@ -6,6 +6,7 @@ python-dotenv==1.0.0
 
 # PDF processing
 pdfplumber==0.10.3
+python-bidi==0.6.7
 
 # Utilities
 numpy==1.26.3
