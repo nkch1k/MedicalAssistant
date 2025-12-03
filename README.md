@@ -59,9 +59,17 @@ source venv/bin/activate
 
 ### 2. Install Dependencies
 
+**Basic installation (recommended - uses OpenAI embeddings):**
 ```bash
 pip install -r requirements.txt
 ```
+
+**Optional - Local embeddings (adds ~2GB, takes longer):**
+```bash
+pip install -r requirements.txt
+pip install -r requirements-optional.txt
+```
+Then set `USE_LOCAL_EMBEDDINGS=true` in `.env`
 
 ### 3. Configure Environment
 
@@ -86,7 +94,36 @@ cp path/to/your/insurance_document.pdf data/
 
 ### Console Application (Part A)
 
-Run the interactive Q&A system:
+**⚠️ Important for Hebrew text (Windows users):**
+
+Standard Windows console (`cmd.exe`) doesn't support RTL (right-to-left) Hebrew text properly. You have two options:
+
+**Option 1: Windows Terminal (recommended for interactive mode)**
+```bash
+# Install Windows Terminal (if not already installed)
+winget install Microsoft.WindowsTerminal
+
+# Run from Windows Terminal
+wt -d . python -m part_a.main
+```
+
+Or use VS Code integrated terminal (Ctrl + `).
+
+**Option 2: Batch Mode (if RTL input issues persist)**
+
+Use a questions file to avoid typing Hebrew directly:
+
+```bash
+# Run with test questions file
+python -m part_a.main --file test_questions.txt
+
+# Or create your own questions file
+python -m part_a.main --file my_questions.txt
+```
+
+The `test_questions.txt` file contains the 4 mandatory test questions in Hebrew. You can edit it or create your own (one question per line, UTF-8 encoding).
+
+**Standard interactive mode:**
 
 ```bash
 python -m part_a.main
@@ -95,7 +132,7 @@ python -m part_a.main
 The system will:
 1. Load and process the PDF document
 2. Create embeddings and index chunks
-3. Start an interactive console
+3. Start an interactive console (or batch process if --file specified)
 
 ### Example Session
 

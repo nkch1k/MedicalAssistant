@@ -5,8 +5,9 @@ Entry point for Part A.
 
 import logging
 import sys
+import argparse
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 from .config import load_config
 from .document_loader import DocumentLoader
@@ -147,22 +148,21 @@ class RAGApplication:
     def run_interactive(self) -> None:
         """Run interactive console interface."""
         print("\n" + "=" * 70)
-        print("מערכת שאלות ותשובות - רפואה משלימה")
         print("Insurance Q&A System - Complementary Medicine")
         print("=" * 70)
-        print("\nפקודות זמינות / Available commands:")
-        print("  - הקלד שאלה / Type a question")
-        print("  - 'יציאה' / 'exit' / 'quit' - לסיום / to quit")
+        print("\nAvailable commands:")
+        print("  - Type your question (Hebrew supported)")
+        print("  - 'exit' / 'quit' - to quit")
         print("=" * 70 + "\n")
 
         while True:
             try:
                 # Get user input
-                question = input("\n💬 שאלה / Question: ").strip()
+                question = input("\n💬 Question: ").strip()
 
                 # Check for exit commands
-                if question.lower() in ["יציאה", "exit", "quit", "q"]:
-                    print("\nמסיים את התוכנית... / Shutting down...")
+                if question.lower() in ["exit", "quit", "q"]:
+                    print("\nShutting down...")
                     break
 
                 # Skip empty input
@@ -170,25 +170,88 @@ class RAGApplication:
                     continue
 
                 # Process question
-                print("\n🔍 מעבד שאלה... / Processing question...\n")
+                print("\n🔍 Processing question...\n")
                 answer = self.answer_question(question)
 
                 # Display answer
-                print(f"✅ תשובה / Answer:\n{answer}\n")
+                print(f"✅ Answer:\n{answer}\n")
                 print("-" * 70)
 
             except KeyboardInterrupt:
-                print("\n\nמסיים את התוכנית... / Shutting down...")
+                print("\n\nShutting down...")
                 break
             except Exception as e:
                 logger.error(f"Error in interactive loop: {e}")
-                print(f"\n❌ שגיאה / Error: {e}\n")
+                print(f"\n❌ Error: {e}\n")
 
-        print("\nתודה שהשתמשת במערכת! / Thank you for using the system!")
+        print("\nThank you for using the system!")
+
+    def run_from_file(self, questions_file: Path) -> None:
+        """
+        Run Q&A from questions file (for RTL terminal issues).
+
+        Args:
+            questions_file: Path to text file with questions (one per line)
+        """
+        if not questions_file.exists():
+            print(f"❌ Error: Questions file not found: {questions_file}")
+            return
+
+        print("\n" + "=" * 70)
+        print("Insurance Q&A System - Batch Mode")
+        print("=" * 70)
+        print(f"Reading questions from: {questions_file.name}\n")
+
+        # Read questions
+        with open(questions_file, 'r', encoding='utf-8') as f:
+            questions = [line.strip() for line in f if line.strip()]
+
+        if not questions:
+            print("❌ No questions found in file")
+            return
+
+        print(f"Found {len(questions)} question(s)\n")
+        print("=" * 70 + "\n")
+
+        # Process each question
+        for i, question in enumerate(questions, 1):
+            print(f"Question {i}/{len(questions)}:")
+            print(f"💬 {question}\n")
+            print("🔍 Processing...\n")
+
+            answer = self.answer_question(question)
+
+            print(f"✅ Answer:\n{answer}\n")
+            print("-" * 70 + "\n")
+
+        print("=" * 70)
+        print("Batch processing complete!")
+        print("=" * 70)
 
 
 def main():
     """Main entry point."""
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(
+        description="RAG-based Insurance Q&A System",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Interactive mode (default):
+  python -m part_a.main
+
+  # Batch mode from questions file:
+  python -m part_a.main --file test_questions.txt
+        """
+    )
+    parser.add_argument(
+        '--file', '-f',
+        type=str,
+        help='Path to text file with questions (one per line) for batch processing'
+    )
+
+    args = parser.parse_args()
+
     # Find PDF document
     config = load_config()
     pdf_files = list(config.data_dir.glob("*.pdf"))
@@ -207,8 +270,12 @@ def main():
         app = RAGApplication()
         pages, chunks = app.initialize_system(document_path)
 
-        # Run interactive interface
-        app.run_interactive()
+        # Run in batch or interactive mode
+        if args.file:
+            questions_file = Path(args.file)
+            app.run_from_file(questions_file)
+        else:
+            app.run_interactive()
 
         return 0
 
