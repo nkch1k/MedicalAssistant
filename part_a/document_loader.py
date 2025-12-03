@@ -75,10 +75,50 @@ class DocumentLoader:
             logger.error(f"Error processing PDF: {e}")
             raise ValueError(f"Failed to process PDF: {e}")
 
+    def _is_rtl_text(self, text: str) -> bool:
+        """
+        Check if text should be reversed (contains RTL Hebrew text).
+        More sophisticated detection for mixed content.
+        """
+        if not text.strip():
+            return False
+
+        # Find first alphabetic character
+        for char in text:
+            if '\u0590' <= char <= '\u05FF':  # Hebrew
+                return True
+            elif ('a' <= char.lower() <= 'z'):  # Latin
+                return False
+
+        # If no alphabetic chars found, check overall Hebrew ratio
+        hebrew_chars = len(re.findall(r'[\u0590-\u05FF]', text))
+        total_alpha = len(re.findall(r'[א-תa-zA-Z]', text))
+        return total_alpha > 0 and (hebrew_chars / total_alpha) > 0.5
+
+    def _reverse_rtl_lines(self, text: str) -> str:
+        """
+        Reverse character order in lines containing RTL text.
+        pdfplumber sometimes extracts RTL text in reverse order.
+        """
+        lines = text.split('\n')
+        fixed_lines = []
+
+        for line in lines:
+            # If line contains significant Hebrew content, reverse it
+            if self._is_rtl_text(line):
+                fixed_lines.append(line[::-1])
+            else:
+                fixed_lines.append(line)
+
+        return '\n'.join(fixed_lines)
+
     def _clean_text(self, text: str) -> str:
         """Clean and normalize extracted text."""
         # Normalize unicode (important for Hebrew)
         text = unicodedata.normalize("NFC", text)
+
+        # Fix RTL text reversal issue
+        text = self._reverse_rtl_lines(text)
 
         # Remove excessive whitespace while preserving paragraph structure
         lines = text.split("\n")

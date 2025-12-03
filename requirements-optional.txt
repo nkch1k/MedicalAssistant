@@ -1,0 +1,8 @@
+# Optional dependencies for local embeddings (HEAVY - ~2GB)
+# Only install if you want to use USE_LOCAL_EMBEDDINGS=true
+sentence-transformers==2.3.1
+torch==2.1.2
+
+# Development tools (optional)
+black==24.1.1
+flake8==7.0.0

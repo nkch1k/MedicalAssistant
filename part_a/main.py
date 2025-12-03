@@ -158,7 +158,7 @@ class RAGApplication:
         while True:
             try:
                 # Get user input
-                question = input("\n💬 Question: ").strip()
+                question = input("\nQuestion: ").strip()
 
                 # Check for exit commands
                 if question.lower() in ["exit", "quit", "q"]:
@@ -170,11 +170,11 @@ class RAGApplication:
                     continue
 
                 # Process question
-                print("\n🔍 Processing question...\n")
+                print("\nProcessing question...\n")
                 answer = self.answer_question(question)
 
                 # Display answer
-                print(f"✅ Answer:\n{answer}\n")
+                print(f"Answer:\n{answer}\n")
                 print("-" * 70)
 
             except KeyboardInterrupt:
@@ -182,7 +182,7 @@ class RAGApplication:
                 break
             except Exception as e:
                 logger.error(f"Error in interactive loop: {e}")
-                print(f"\n❌ Error: {e}\n")
+                print(f"\nError: {e}\n")
 
         print("\nThank you for using the system!")
 
@@ -194,7 +194,7 @@ class RAGApplication:
             questions_file: Path to text file with questions (one per line)
         """
         if not questions_file.exists():
-            print(f"❌ Error: Questions file not found: {questions_file}")
+            print(f"Error: Questions file not found: {questions_file}")
             return
 
         print("\n" + "=" * 70)
@@ -207,7 +207,7 @@ class RAGApplication:
             questions = [line.strip() for line in f if line.strip()]
 
         if not questions:
-            print("❌ No questions found in file")
+            print("Error: No questions found in file")
             return
 
         print(f"Found {len(questions)} question(s)\n")
@@ -216,12 +216,12 @@ class RAGApplication:
         # Process each question
         for i, question in enumerate(questions, 1):
             print(f"Question {i}/{len(questions)}:")
-            print(f"💬 {question}\n")
-            print("🔍 Processing...\n")
+            print(f"{question}\n")
+            print("Processing...\n")
 
             answer = self.answer_question(question)
 
-            print(f"✅ Answer:\n{answer}\n")
+            print(f"Answer:\n{answer}\n")
             print("-" * 70 + "\n")
 
         print("=" * 70)
@@ -231,6 +231,11 @@ class RAGApplication:
 
 def main():
     """Main entry point."""
+    # Configure stdout encoding for Windows console
+    import sys
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+
     # Parse command-line arguments
     parser = argparse.ArgumentParser(
         description="RAG-based Insurance Q&A System",
@@ -257,13 +262,13 @@ Examples:
     pdf_files = list(config.data_dir.glob("*.pdf"))
 
     if not pdf_files:
-        print(f"❌ Error: No PDF files found in {config.data_dir}")
+        print(f"Error: No PDF files found in {config.data_dir}")
         print(f"Please place your insurance document PDF in the 'data' directory.")
         return 1
 
     # Use the first PDF found
     document_path = pdf_files[0]
-    print(f"📄 Using document: {document_path.name}\n")
+    print(f"Using document: {document_path.name}\n")
 
     try:
         # Initialize application
@@ -281,7 +286,7 @@ Examples:
 
     except Exception as e:
         logger.error(f"Application error: {e}")
-        print(f"\n❌ Fatal error: {e}")
+        print(f"\nFatal error: {e}")
         return 1
 
 

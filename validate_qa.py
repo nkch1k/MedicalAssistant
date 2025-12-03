@@ -179,6 +179,11 @@ def save_report(report: Dict[str, Any], output_path: Path) -> None:
 
 def main():
     """Main entry point."""
+    # Configure stdout encoding for Windows console
+    import sys
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+
     # Find PDF document
     config = load_config()
     pdf_files = list(config.data_dir.glob("*.pdf"))
