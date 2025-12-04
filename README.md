@@ -464,3 +464,47 @@ Logs are written to:
 - Use local embeddings instead of storing all in memory
 - Process document in batches
 
+### Port 8000 already in use (Part B)
+
+If you get an error that port 8000 is already in use when starting the API server:
+
+**Windows:**
+```bash
+# Find process using port 8000
+netstat -ano | findstr :8000
+
+# Kill the process (replace PID with the number from previous command)
+taskkill /PID <PID> /F
+```
+
+**Linux/Mac:**
+```bash
+# Find and kill process using port 8000
+lsof -ti:8000 | xargs kill -9
+```
+
+**Alternative:** Use a different port
+```bash
+uvicorn part_b.main:app --port 8001
+```
+
+### Corrupted ChromaDB vector store
+
+If you encounter database errors like "no such column: collections.topic" or other ChromaDB initialization issues:
+
+**Clear and rebuild vector store:**
+```bash
+# Remove corrupted databases
+rm -rf vector_store/
+rm -rf db/
+
+# Or on Windows:
+# rmdir /s /q vector_store
+# rmdir /s /q db
+
+# Restart the application - it will rebuild automatically
+python -m part_a.main --file test_questions.txt
+```
+
+This forces a clean initialization with fresh ChromaDB instance and reloads all data from scratch.
+
