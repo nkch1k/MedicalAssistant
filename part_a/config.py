@@ -30,7 +30,7 @@ class Config:
         self.chunk_overlap = int(os.getenv("CHUNK_OVERLAP", "120"))
 
         # Retrieval settings
-        self.retrieval_k = int(os.getenv("RETRIEVAL_K", "4"))
+        self.retrieval_k = int(os.getenv("RETRIEVAL_K", "8"))
         self.similarity_threshold = float(os.getenv("SIMILARITY_THRESHOLD", "0.7"))
 
         # Embeddings

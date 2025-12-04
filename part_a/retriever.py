@@ -99,7 +99,7 @@ class VectorStoreRetriever:
     def retrieve(
         self,
         query: str,
-        k: int = 4,
+        k: int = 8,
         similarity_threshold: Optional[float] = None
     ) -> List[RetrievedChunk]:
         """
